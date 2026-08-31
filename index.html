@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kitsch · Customer Experience Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rb-pink:#FFD3DE;
+  --rb-peach:#FFE3C7;
+  --rb-yellow:#FFF3B8;
+  --rb-mint:#C9F0D6;
+  --rb-sky:#C6E7FF;
+  --rb-lavender:#DCD1FF;
+  --ink:#2E2B3B;
+  --ink-soft:#6B6780;
+  --card-bg:#FFFFFF;
+  --bg:#FAF9FC;
+  --border:#ECE8F4;
+  --radius:18px;
+  --radius-sm:12px;
+  --shadow:0 4px 20px rgba(120,110,160,0.08);
+  --shadow-hover:0 8px 28px rgba(120,110,160,0.14);
+  --good:#B9E8C9;
+  --good-ink:#1F7A45;
+  --ok:#FFE9A8;
+  --ok-ink:#8A6B00;
+  --bad:#FFC2C2;
+  --bad-ink:#B23A3A;
+  --critical:#FF8A8A;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 0%, var(--rb-pink) 0%, transparent 40%),
+    radial-gradient(circle at 90% 0%, var(--rb-sky) 0%, transparent 40%),
+    radial-gradient(circle at 50% 100%, var(--rb-mint) 0%, transparent 45%),
+    var(--bg);
+  background-attachment:fixed;
+  min-height:100vh;
+  padding-bottom:60px;
+}
+h1,h2,h3,.brand{font-family:'Poppins',sans-serif;}
+
+/* ---------- HEADER ---------- */
+.top-rainbow{
+  height:8px;
+  width:100%;
+  background:linear-gradient(90deg,var(--rb-pink),var(--rb-peach),var(--rb-yellow),var(--rb-mint),var(--rb-sky),var(--rb-lavender));
+}
+header{
+  padding:28px 24px 18px;
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.brand-block{display:flex;align-items:center;gap:14px;}
+.brand-logo{
+  width:52px;height:52px;border-radius:16px;
+  background:linear-gradient(135deg,var(--rb-lavender),var(--rb-sky));
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;box-shadow:var(--shadow);
+  flex-shrink:0;
+}
+.brand h1{margin:0;font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;}
+.brand p{margin:2px 0 0;color:var(--ink-soft);font-size:0.92rem;font-weight:500;}
+.header-meta{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+}
+.badge{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:8px 16px;
+  font-size:0.82rem;
+  font-weight:600;
+  color:var(--ink-soft);
+  box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:6px;
+}
+.badge.phase{background:linear-gradient(90deg,var(--rb-mint),var(--rb-sky));color:var(--ink);}
+
+/* ---------- TABS ---------- */
+.tabs-wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+.tabs{
+  display:flex;gap:8px;
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:6px;
+  box-shadow:var(--shadow);
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.tab-btn{
+  border:none;background:transparent;cursor:pointer;
+  padding:10px 18px;border-radius:999px;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:0.9rem;
+  color:var(--ink-soft);white-space:nowrap;
+  transition:all .2s ease;
+}
+.tab-btn:hover{color:var(--ink);}
+.tab-btn.active{
+  color:var(--ink);
+  background:linear-gradient(90deg,var(--rb-pink),var(--rb-lavender));
+  box-shadow:0 2px 10px rgba(120,110,160,0.18);
+}
+
+/* ---------- MAIN ---------- */
+main{max-width:1200px;margin:0 auto;padding:24px;}
+.view{display:none;animation:fadeIn .35s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.section-title{
+  display:flex;align-items:center;gap:10px;
+  margin:0 0 16px;font-size:1.15rem;font-weight:700;
+}
+.section-title .dot{width:10px;height:10px;border-radius:50%;}
+
+/* ---------- SUMMARY CARDS ---------- */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  transition:box-shadow .2s ease;
+}
+.card:hover{box-shadow:var(--shadow-hover);}
+.card-top-strip{height:6px;border-radius:6px;margin:-20px -20px 16px;}
+.func-card h3{margin:0 0 4px;font-size:1.05rem;}
+.func-card .sub{color:var(--ink-soft);font-size:0.85rem;margin:0 0 14px;}
+.func-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.hc-input{
+  width:64px;padding:6px 8px;border-radius:8px;border:1.5px solid var(--rb-sky);
+  font-weight:700;color:#1a5fb4;text-align:center;font-family:'Inter',sans-serif;
+}
+.score-big{font-size:2.1rem;font-weight:800;font-family:'Poppins',sans-serif;}
+.tier-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:999px;font-weight:700;font-size:0.82rem;
+  margin-top:6px;
+}
+.progress-track{
+  width:100%;height:10px;border-radius:6px;background:#F0EEF7;overflow:hidden;margin-top:10px;
+}
+.progress-fill{height:100%;border-radius:6px;transition:width .5s ease;}
+
+/* department total */
+.dept-total{
+  margin-top:20px;text-align:center;padding:26px;
+  border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--rb-lavender),var(--rb-sky),var(--rb-mint));
+  box-shadow:var(--shadow);
+}
+.dept-total .score-big{font-size:2.8rem;}
+.dept-total p{margin:4px 0 0;color:var(--ink-soft);font-weight:600;}
+
+.legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px;}
+.legend .chip{
+  display:flex;align-items:center;gap:6px;font-size:0.8rem;font-weight:600;
+  background:var(--card-bg);border:1px solid var(--border);border-radius:999px;padding:6px 12px;
+}
+.legend .chip .sw{width:10px;height:10px;border-radius:50%;}
+
+/* ---------- METRIC TABLE ---------- */
+.metrics-wrap{display:flex;flex-direction:column;gap:12px;}
+.metric-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:16px 18px;box-shadow:var(--shadow);
+  display:grid;grid-template-columns:1.6fr 0.8fr 0.8fr 1fr 1.4fr;gap:14px;align-items:center;
+}
+.metric-card:nth-child(6n+1){border-left:5px solid var(--rb-pink);}
+.metric-card:nth-child(6n+2){border-left:5px solid var(--rb-peach);}
+.metric-card:nth-child(6n+3){border-left:5px solid var(--rb-yellow);}
+.metric-card:nth-child(6n+4){border-left:5px solid var(--rb-mint);}
+.metric-card:nth-child(6n+5){border-left:5px solid var(--rb-sky);}
+.metric-card:nth-child(6n+6){border-left:5px solid var(--rb-lavender);}
+.metric-name{font-weight:700;font-size:0.92rem;}
+.metric-note{font-size:0.76rem;color:var(--ink-soft);margin-top:3px;line-height:1.3;}
+.metric-sub{font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
+.metric-val{font-weight:700;font-size:0.95rem;}
+.actual-input{
+  width:90px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--rb-sky);
+  font-weight:700;text-align:center;font-family:'Inter',sans-serif;color:#1a5fb4;
+}
+.attain-block{display:flex;flex-direction:column;gap:6px;}
+.attain-top{display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;font-weight:700;}
+.status-tag{
+  font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;
+}
+.total-row{
+  margin-top:6px;padding:18px 20px;border-radius:var(--radius);
+  background:linear-gradient(90deg,var(--rb-mint),var(--rb-sky),var(--rb-lavender));
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  box-shadow:var(--shadow);
+}
+.total-row .score-big{font-size:2rem;}
+
+/* ---------- ROLLOUT ---------- */
+.rollout-track{display:flex;flex-direction:column;gap:18px;position:relative;}
+.phase-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 22px;box-shadow:var(--shadow);position:relative;padding-left:26px;
+}
+.phase-card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:8px;border-radius:8px 0 0 8px;
+}
+.phase-card.p1::before{background:var(--rb-pink);}
+.phase-card.p2::before{background:var(--rb-sky);}
+.phase-card.p3::before{background:var(--rb-lavender);}
+.phase-card.is-current{outline:2.5px solid #9ED2FF;}
+.phase-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.phase-head h3{margin:0;font-size:1.05rem;}
+.phase-range{font-size:0.78rem;color:var(--ink-soft);font-weight:600;}
+.phase-weight{font-size:0.78rem;font-weight:700;background:#F3F1FB;padding:4px 10px;border-radius:999px;}
+.phase-desc{font-size:0.9rem;color:var(--ink-soft);line-height:1.5;margin:6px 0 0;}
+.current-flag{
+  font-size:0.7rem;font-weight:800;color:#1a5fb4;background:var(--rb-sky);
+  padding:3px 10px;border-radius:999px;
+}
+
+/* ---------- FOOTER / ACTIONS ---------- */
+.actions-bar{
+  max-width:1200px;margin:26px auto 0;padding:0 24px;
+  display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;
+}
+.btn{
+  border:none;cursor:pointer;padding:10px 18px;border-radius:999px;
+  font-weight:700;font-size:0.85rem;font-family:'Inter',sans-serif;
+  box-shadow:var(--shadow);transition:transform .15s ease;
+}
+.btn:hover{transform:translateY(-1px);}
+.btn.reset{background:var(--card-bg);border:1.5px solid var(--border);color:var(--ink-soft);}
+.btn.primary{background:linear-gradient(90deg,var(--rb-pink),var(--rb-lavender));color:var(--ink);}
+
+footer{
+  text-align:center;color:var(--ink-soft);font-size:0.78rem;padding:30px 20px 0;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 860px){
+  .grid-2{grid-template-columns:1fr;}
+  .metric-card{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .metric-card > div{width:100%;}
+  .metric-sub{margin-top:6px;}
+  .attain-block{margin-top:4px;}
+}
+@media (max-width: 480px){
+  header{padding:20px 16px 14px;}
+  main{padding:16px;}
+  .brand h1{font-size:1.2rem;}
+  .score-big{font-size:1.7rem;}
+  .dept-total .score-big{font-size:2.2rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-rainbow"></div>
+
+<header>
+  <div class="brand-block">
+    <div class="brand-logo">🌈</div>
+    <div class="brand">
+      <h1>Kitsch <span style="font-weight:500;color:var(--ink-soft);">· CX Scorecard</span></h1>
+      <p id="subtitleText">Customer Experience Department — CSR + CSSR</p>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="badge phase" id="phaseBadge">Phase —</div>
+    <div class="badge" id="versionBadge">v1.0.0</div>
+    <div class="badge" id="updatedBadge">Updated —</div>
+  </div>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" data-view="overview">📊 Overview</button>
+    <button class="tab-btn" data-view="csr">🎫 CSR Scorecard</button>
+    <button class="tab-btn" data-view="cssr">💬 CSSR Scorecard</button>
+    <button class="tab-btn" data-view="rollout">🗓️ 30-60-90 Rollout</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- OVERVIEW / DEPARTMENT SUMMARY -->
+  <section class="view active" id="view-overview">
+    <div class="section-title"><span class="dot" style="background:var(--rb-lavender);"></span>Department Summary</div>
+    <div class="grid-2" id="overviewCards"></div>
+    <div class="dept-total" id="deptTotal"></div>
+    <div class="legend" id="tierLegend"></div>
+  </section>
+
+  <!-- CSR -->
+  <section class="view" id="view-csr">
+    <div class="section-title"><span class="dot" style="background:var(--rb-pink);"></span><span id="csrLabel">CSR Scorecard</span></div>
+    <div class="metrics-wrap" id="csrMetrics"></div>
+    <div class="total-row" id="csrTotal"></div>
+  </section>
+
+  <!-- CSSR -->
+  <section class="view" id="view-cssr">
+    <div class="section-title"><span class="dot" style="background:var(--rb-sky);"></span><span id="cssrLabel">CSSR Scorecard</span></div>
+    <div class="metrics-wrap" id="cssrMetrics"></div>
+    <div class="total-row" id="cssrTotal"></div>
+  </section>
+
+  <!-- ROLLOUT -->
+  <section class="view" id="view-rollout">
+    <div class="section-title"><span class="dot" style="background:var(--rb-mint);"></span>30-60-90 Day Rollout</div>
+    <div class="rollout-track" id="rolloutTrack"></div>
+  </section>
+
+</main>
+
+<div class="actions-bar">
+  <button class="btn reset" id="resetBtn">↺ Reset to sample data</button>
+</div>
+
+<footer>Kitsch · Customer Experience Department Scorecard — built for the 30-60-90 Day Improvement Plan</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
