@@ -2,22 +2,23 @@
    Kitsch · Customer Experience Scorecard
    App logic — data.json driven, Agent View + Team View
    (Team Health / Metrics / Scorecard / Top Performers /
-   Rollout), TL Mode gating, 1:1 coaching modal with history,
-   personalized tips engine, and localStorage persistence.
+   Rollout), TL Mode gating, 1:1 coaching modal with history
+   + printable/PDF-ready export, personalized tips engine,
+   and localStorage persistence.
 ========================================================= */
 
-const STORAGE_KEY = "kitschScorecardOverrides_v4";
+const STORAGE_KEY = "kitschScorecardOverrides_v5";
 let DATA = null;
 let STATE = null;
 
-let appMode = "agent";          // "agent" | "team"
+let appMode = "agent";
 let selectedAgentIdx = 0;
 let tlMode = false;
-let teamSubview = "health";     // health | metrics | scorecard | topperformers | rollout
-let metricsFuncTab = "csr";     // csr | cssr
+let teamSubview = "health";
+let metricsFuncTab = "csr";
 
 let modalAgentIdx = null;
-let modalActionItems = [];      // working copy while modal is open
+let modalActionItems = [];
 let modalIsDirty = false;
 
 /* ---------------- Utility formatting ---------------- */
@@ -27,9 +28,15 @@ function fmtUnit(value, unit) {
   if (unit === "min") return Math.round(value) + "m";
   return Math.round(value) + " " + unit;
 }
+function fmtGoalPlain(m) {
+  return (m.direction === "higher" ? ">= " : "<= ") + fmtUnit(m.goal, m.unit);
+}
 function fmtPct(value) { return (value * 100).toFixed(1) + "%"; }
 function firstName(fullName) { return fullName.split(" ")[0]; }
 function todayISO() { return new Date().toISOString().slice(0, 10); }
+function escapeHtml(str) {
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+}
 
 /* ---------------- Core scoring logic ---------------- */
 function computeAttainment(metric) {
@@ -84,20 +91,13 @@ function statusColors(attainment, belowCap) {
 
 /* ---------------- Personalized tips engine ---------------- */
 function getAgentTips(rows, tierIndex, score) {
-  const problems = rows
-    .filter((r) => r.belowCap || r.attainment < 0.95)
-    .sort((a, b) => a.attainment - b.attainment)
-    .slice(0, 3);
-
+  const problems = rows.filter((r) => r.belowCap || r.attainment < 0.95).sort((a, b) => a.attainment - b.attainment).slice(0, 3);
   if (problems.length === 0) {
-    if (tierIndex === 0) {
-      return [{ icon: "🌟", title: "Outstanding work!", text: "You're delivering perfect execution against every goal this month. Keep setting the standard for the team!", tone: "positive" }];
-    }
+    if (tierIndex === 0) return [{ icon: "🌟", title: "Outstanding work!", text: "You're delivering perfect execution against every goal this month. Keep setting the standard for the team!", tone: "positive" }];
     const nextTier = STATE.tiers[tierIndex - 1];
     const gapPts = ((nextTier.min - score) * 100).toFixed(1);
     return [{ icon: "🌟", title: "Great job!", text: `You're on track across all your metrics this month. Keep this consistency and you're only ${gapPts} points away from ${nextTier.emoji} ${nextTier.name}!`, tone: "positive" }];
   }
-
   return problems.map((r) => {
     const tip = (STATE.metricTips && STATE.metricTips[r.name]) || { icon: "💡", title: `Improve ${r.name}`, advice: "Actual is {actual} (goal {goal}). Talk to your TL for a focused coaching plan on this metric." };
     const text = tip.advice.replace("{actual}", fmtUnit(r.actual, r.unit)).replace("{goal}", fmtUnit(r.goal, r.unit));
@@ -127,7 +127,6 @@ function saveOverrides(overrides) { localStorage.setItem(STORAGE_KEY, JSON.strin
 function buildState() {
   const overrides = loadOverrides();
   const clone = JSON.parse(JSON.stringify(DATA));
-
   ["csr", "cssr"].forEach((key) => {
     if (overrides.headcount && overrides.headcount[key] != null) clone[key].headcount = overrides.headcount[key];
     clone[key].metrics.forEach((m, idx) => {
@@ -135,14 +134,12 @@ function buildState() {
       if (o != null) m.actual = o;
     });
   });
-
   if (overrides.agents && clone.agents) {
     clone.agents.forEach((agent, idx) => {
       const agentOverride = overrides.agents[idx];
       if (agentOverride) Object.keys(agentOverride).forEach((metricName) => { agent.actuals[metricName] = agentOverride[metricName]; });
     });
   }
-
   STATE = clone;
 }
 
@@ -154,7 +151,6 @@ function applyTlModeToDOM() {
   const tlBtn = document.getElementById("tlToggleBtn");
   tlBtn.classList.toggle("on", tlMode);
   tlBtn.textContent = tlMode ? "🔓 TL Mode: ON" : "🔒 TL Mode";
-
   document.querySelectorAll(".actual-input, .hc-input").forEach((el) => { el.disabled = !tlMode; });
   document.querySelectorAll(".sc-onetoone-btn").forEach((btn) => { btn.disabled = !tlMode; });
 }
@@ -254,13 +250,12 @@ function renderAgentView() {
 }
 
 /* ================================================================
-   TEAM VIEW — Team Health
+   TEAM VIEW — Team Health / Metrics
 ================================================================ */
 function renderMetrics(containerId, fnKey) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
   const fn = STATE[fnKey];
-
   fn.metrics.forEach((m, idx) => {
     const { attainment, belowCap } = computeAttainment(m);
     const colors = statusColors(attainment, belowCap);
@@ -278,7 +273,6 @@ function renderMetrics(containerId, fnKey) {
     `;
     container.appendChild(card);
   });
-
   container.querySelectorAll(".actual-input").forEach((input) => input.addEventListener("input", onActualChange));
 }
 
@@ -375,12 +369,10 @@ function renderScorecardTables() {
       const tier = getTier(score);
       const filledStars = Math.max(0, Math.min(5, Math.floor(score * 5)));
       const starsHtml = Array.from({ length: 5 }, (_, k) => k < filledStars ? "★" : "☆").join("");
-
       const metricCells = rows.map((r) => {
         const colors = statusColors(r.attainment, r.belowCap);
         return `<td><span class="sc-cell" style="background:${colors.bg};color:${colors.ink};">${fmtUnit(r.actual, r.unit)}</span></td>`;
       }).join("");
-
       return `
         <tr>
           <td>${a.name}</td>
@@ -398,13 +390,7 @@ function renderScorecardTables() {
         <div class="panel-strip" style="background:${g.stripe};"></div>
         <div class="sc-group-title">${g.label} <span class="sc-group-count">${agentsInGroup.length} agents · avg ${fmtPct(groupAvg)}</span></div>
         <table class="sc-table">
-          <thead>
-            <tr>
-              <th>Agent</th><th>Score</th><th>Tier</th>
-              ${metrics.map((m) => `<th>${m.short}</th>`).join("")}
-              <th>Final %</th><th>1:1</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Agent</th><th>Score</th><th>Tier</th>${metrics.map((m) => `<th>${m.short}</th>`).join("")}<th>Final %</th><th>1:1</th></tr></thead>
           <tbody>${rowsHtml}</tbody>
         </table>
       </div>
@@ -412,10 +398,7 @@ function renderScorecardTables() {
   }).join("");
 
   wrap.querySelectorAll(".sc-onetoone-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (btn.disabled) return;
-      openOneOnOne(parseInt(btn.dataset.agentIdx, 10));
-    });
+    btn.addEventListener("click", () => { if (!btn.disabled) openOneOnOne(parseInt(btn.dataset.agentIdx, 10)); });
   });
 }
 
@@ -423,9 +406,7 @@ function renderScorecardTables() {
    TEAM VIEW — Top Performers
 ================================================================ */
 function renderTopPerformers() {
-  const list = STATE.agents.map((agent, idx) => ({ agent, idx, score: computeAgentScore(agent) }))
-    .sort((a, b) => b.score - a.score);
-
+  const list = STATE.agents.map((agent, idx) => ({ agent, idx, score: computeAgentScore(agent) })).sort((a, b) => b.score - a.score);
   const top3 = list.slice(0, 3);
   const medals = ["🥇", "🥈", "🥉"];
   document.getElementById("tpPodium").innerHTML = top3.map((item, rank) => {
@@ -468,7 +449,6 @@ function renderRollout() {
     ranges.forEach((r, i) => { if (daysSinceStart >= r.min && daysSinceStart < r.max) currentPhaseIndex = i; });
     if (daysSinceStart >= 90) currentPhaseIndex = 2;
   }
-
   track.innerHTML = STATE.rollout.map((phase, i) => {
     const isCurrent = i === currentPhaseIndex;
     return `
@@ -484,7 +464,6 @@ function renderRollout() {
       </div>
     `;
   }).join("");
-
   const phaseBadge = document.getElementById("phaseBadge");
   if (daysSinceStart < 0) phaseBadge.textContent = `Starts ${STATE.meta.contractStartDate}`;
   else if (currentPhaseIndex >= 0) phaseBadge.textContent = `Day ${daysSinceStart + 1} · ${STATE.rollout[currentPhaseIndex].name}`;
@@ -533,7 +512,7 @@ function openOneOnOne(agentIdx) {
   document.getElementById("oneOnOneOverlay").classList.add("show");
 
   ["modalStrengths", "modalOpportunities", "modalTlNotes", "modalAgentComments", "modalSessionDate", "modalNextDate"].forEach((id) => {
-    document.getElementById(id).addEventListener("input", () => { modalIsDirty = true; }, { once: false });
+    document.getElementById(id).addEventListener("input", () => { modalIsDirty = true; });
   });
 }
 
@@ -566,10 +545,7 @@ function renderActionItems() {
 function renderHistoryList(agentIdx) {
   const history = getOneOnOneHistory(agentIdx);
   const el = document.getElementById("historyList");
-  if (history.length === 0) {
-    el.innerHTML = `<div class="history-empty">No previous 1:1s saved yet.</div>`;
-    return;
-  }
+  if (history.length === 0) { el.innerHTML = `<div class="history-empty">No previous 1:1s saved yet.</div>`; return; }
   el.innerHTML = history.slice().reverse().map((h) => {
     const doneCount = (h.actionItems || []).filter((a) => a.done).length;
     const totalCount = (h.actionItems || []).length;
@@ -595,7 +571,151 @@ function buildSessionObject() {
   };
 }
 
-function sessionToText(session, agentName) {
+/* ---------------- Printable / PDF-ready 1:1 view ---------------- */
+function buildPrintableOneOnOneHtml(session, agent, rows, score, tier) {
+  const fnLabel = agent.function === "csr" ? "CSR" : "CSSR";
+  const now = new Date();
+  const generatedAt = now.toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit" }) +
+    ", " + now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+
+  const metricsRows = rows.map((r) => `
+    <tr>
+      <td class="pr-metric-name">${r.short}</td>
+      <td>${fmtUnit(r.actual, r.unit)}</td>
+      <td class="pr-goal">${fmtGoalPlain(r)}</td>
+    </tr>
+  `).join("");
+
+  function section(label, content) {
+    if (!content || String(content).trim() === "") return "";
+    return `
+      <div class="pr-section">
+        <div class="pr-section-title">${label}</div>
+        <div class="pr-section-box">${escapeHtml(content)}</div>
+      </div>
+    `;
+  }
+
+  let actionItemsHtml = "";
+  if (session.actionItems && session.actionItems.length > 0) {
+    actionItemsHtml = `
+      <div class="pr-section">
+        <div class="pr-section-title">✅ ACTION ITEMS</div>
+        <div class="pr-section-box" style="padding:6px 18px;white-space:normal;">
+          <ul class="pr-action-list">${session.actionItems.map((a) => `<li>${a.done ? "☑" : "☐"} ${escapeHtml(a.text || "")}</li>`).join("")}</ul>
+        </div>
+      </div>
+    `;
+  }
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>1:1 Session — ${agent.name}</title>
+<style>
+  @page { margin: 24px; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif; color: #2E2B3B; margin: 0; padding: 32px;
+    background: #FAF9FC;
+  }
+  .pr-print-btn {
+    background: linear-gradient(90deg, #5B6FE8, #5FA9E8); color: #fff; border: none;
+    padding: 12px 22px; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .pr-title {
+    color: #5B6FE8; font-size: 1.5rem; font-weight: 800; margin: 4px 0 6px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pr-agent-name { font-size: 1.15rem; font-weight: 700; margin: 0 0 14px; color: #2E2B3B; }
+  .pr-meta-box {
+    background: #F3F1FB; border-radius: 10px; padding: 12px 18px; margin-bottom: 26px;
+    display: flex; flex-wrap: wrap; gap: 18px; font-size: 0.86rem; color: #4A4560; font-weight: 600;
+  }
+  .pr-meta-box span { display: flex; align-items: center; gap: 5px; }
+  .pr-tier-chip { padding: 2px 10px; border-radius: 999px; font-weight: 700; }
+  .pr-section { margin-bottom: 24px; }
+  .pr-section-title {
+    color: #5B6FE8; font-weight: 800; font-size: 0.95rem; margin-bottom: 8px;
+    padding-bottom: 6px; border-bottom: 1px solid #E4E0F2;
+  }
+  .pr-section-box {
+    background: #fff; border: 1px solid #ECE8F4; border-radius: 10px; padding: 14px 18px;
+    font-size: 0.9rem; line-height: 1.55; white-space: pre-wrap;
+  }
+  table.pr-metrics-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; }
+  table.pr-metrics-table th {
+    background: #F3F1FB; color: #4A4560; text-align: left; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: .02em; padding: 10px 16px; font-weight: 700;
+  }
+  table.pr-metrics-table td { padding: 10px 16px; font-size: 0.9rem; border-top: 1px solid #ECE8F4; }
+  .pr-metric-name { font-weight: 700; }
+  .pr-goal { color: #6B6780; }
+  .pr-action-list { margin: 8px 0; padding-left: 4px; list-style: none; font-size: 0.9rem; line-height: 1.8; }
+  .pr-footer { text-align: center; color: #9A94AE; font-size: 0.78rem; margin-top: 34px; padding-top: 16px; border-top: 1px solid #ECE8F4; }
+  @media print {
+    body { background: #fff; padding: 0 24px; }
+    .pr-print-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+  <button class="pr-print-btn" onclick="window.print()">🖨️ Imprimir / Guardar como PDF</button>
+
+  <div class="pr-title">📝 Sesión 1:1</div>
+  <div class="pr-agent-name">${agent.name}</div>
+
+  <div class="pr-meta-box">
+    <span>📅 Fecha: ${session.date}</span>
+    <span>👥 ${fnLabel}</span>
+    <span class="pr-tier-chip" style="background:${tier.color};">${tier.emoji} ${tier.name}</span>
+    <span>📊 ${fmtPct(score)}</span>
+    <span>🗓️ ${STATE.meta.scorePeriod}</span>
+  </div>
+
+  <div class="pr-section">
+    <div class="pr-section-title">📊 MÉTRICAS DEL MES</div>
+    <table class="pr-metrics-table">
+      <thead><tr><th>Métrica</th><th>Valor</th><th>Meta</th></tr></thead>
+      <tbody>${metricsRows}</tbody>
+    </table>
+  </div>
+
+  ${section("🎯 FORTALEZAS", session.strengths)}
+  ${section("⚠️ ÁREAS DE OPORTUNIDAD", session.opportunities)}
+  ${actionItemsHtml}
+  ${section("📝 NOTAS DEL TL", session.tlNotes)}
+  ${section("💬 COMENTARIOS DEL AGENTE", session.agentComments)}
+  ${session.nextDate ? section("📅 PRÓXIMO 1:1", session.nextDate) : ""}
+
+  <div class="pr-footer">Generado desde Kitsch CX Scorecard · ${generatedAt}</div>
+</body>
+</html>`;
+}
+
+function openPrintableOneOnOne() {
+  if (modalAgentIdx == null) return;
+  const agent = STATE.agents[modalAgentIdx];
+  const rows = computeAgentMetrics(agent);
+  const score = computeAgentScore(agent);
+  const tier = getTier(score);
+  const session = buildSessionObject();
+  const html = buildPrintableOneOnOneHtml(session, agent, rows, score, tier);
+
+  const printWindow = window.open("", "_blank");
+  if (!printWindow) {
+    alert("Please allow pop-ups to open the printable 1:1 view.");
+    return;
+  }
+  printWindow.document.open();
+  printWindow.document.write(html);
+  printWindow.document.close();
+  printWindow.focus();
+}
+
+function sessionToPlainText(session, agentName) {
   const lines = [];
   lines.push(`1:1 Session — ${agentName}`);
   lines.push(`Date: ${session.date}`);
@@ -649,16 +769,12 @@ function initModalControls() {
 
   document.getElementById("modalCopyBtn").addEventListener("click", async () => {
     const agent = STATE.agents[modalAgentIdx];
-    const text = sessionToText(buildSessionObject(), agent.name);
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch (e) {
+    const text = sessionToPlainText(buildSessionObject(), agent.name);
+    try { await navigator.clipboard.writeText(text); }
+    catch (e) {
       const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
       try { document.execCommand("copy"); } catch (e2) { /* no-op */ }
       document.body.removeChild(ta);
     }
@@ -668,20 +784,7 @@ function initModalControls() {
     setTimeout(() => { btn.textContent = original; }, 1400);
   });
 
-  document.getElementById("modalDownloadBtn").addEventListener("click", () => {
-    const agent = STATE.agents[modalAgentIdx];
-    const session = buildSessionObject();
-    const text = sessionToText(session, agent.name);
-    const blob = new Blob([text], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `1on1_${agent.name.replace(/\s+/g, "_")}_${session.date}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  });
+  document.getElementById("modalPrintBtn").addEventListener("click", () => { openPrintableOneOnOne(); });
 }
 
 /* ---------------- Event handlers (team edits) ---------------- */
