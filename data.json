@@ -3,7 +3,7 @@
     "company": "Kitsch",
     "department": "Customer Experience Department",
     "subtitle": "CSR (Tickets) + CSSR (Social Media)",
-    "version": "v1.0.0",
+    "version": "v1.1.0",
     "lastUpdated": "2026-08-31",
     "contractStartDate": "2026-09-07"
   },
@@ -38,6 +38,20 @@
       { "name": "Escalation Rate", "weight": 0.10, "goal": 0.10, "cap": 0.20, "unit": "%", "actual": 0.24, "direction": "lower", "note": "% of interactions requiring escalation to Tier 2 or another department." }
     ]
   },
+  "agents": [
+    { "name": "CSR Agent 1", "function": "csr", "actuals": { "QA Score": 0.97, "SLA Attainment": 0.93, "Attendance / Adherence": 0.98, "CSAT": 0.93, "AHT (Average Handle Time)": 450, "First Response Time (Tickets)": 200, "Backlog Health (% tickets \u2264 2 days)": 0.85 } },
+    { "name": "CSR Agent 2", "function": "csr", "actuals": { "QA Score": 0.95, "SLA Attainment": 0.90, "Attendance / Adherence": 0.96, "CSAT": 0.90, "AHT (Average Handle Time)": 485, "First Response Time (Tickets)": 245, "Backlog Health (% tickets \u2264 2 days)": 0.78 } },
+    { "name": "CSR Agent 3", "function": "csr", "actuals": { "QA Score": 0.93, "SLA Attainment": 0.88, "Attendance / Adherence": 0.95, "CSAT": 0.88, "AHT (Average Handle Time)": 500, "First Response Time (Tickets)": 260, "Backlog Health (% tickets \u2264 2 days)": 0.70 } },
+    { "name": "CSR Agent 4", "function": "csr", "actuals": { "QA Score": 0.91, "SLA Attainment": 0.85, "Attendance / Adherence": 0.92, "CSAT": 0.87, "AHT (Average Handle Time)": 520, "First Response Time (Tickets)": 280, "Backlog Health (% tickets \u2264 2 days)": 0.60 } },
+    { "name": "CSR Agent 5", "function": "csr", "actuals": { "QA Score": 0.90, "SLA Attainment": 0.84, "Attendance / Adherence": 0.90, "CSAT": 0.85, "AHT (Average Handle Time)": 540, "First Response Time (Tickets)": 300, "Backlog Health (% tickets \u2264 2 days)": 0.55 } },
+    { "name": "CSR Agent 6", "function": "csr", "actuals": { "QA Score": 0.88, "SLA Attainment": 0.80, "Attendance / Adherence": 0.88, "CSAT": 0.83, "AHT (Average Handle Time)": 560, "First Response Time (Tickets)": 320, "Backlog Health (% tickets \u2264 2 days)": 0.48 } },
+    { "name": "CSR Agent 7", "function": "csr", "actuals": { "QA Score": 0.85, "SLA Attainment": 0.78, "Attendance / Adherence": 0.85, "CSAT": 0.80, "AHT (Average Handle Time)": 580, "First Response Time (Tickets)": 340, "Backlog Health (% tickets \u2264 2 days)": 0.40 } },
+    { "name": "CSR Agent 8", "function": "csr", "actuals": { "QA Score": 0.80, "SLA Attainment": 0.70, "Attendance / Adherence": 0.80, "CSAT": 0.75, "AHT (Average Handle Time)": 600, "First Response Time (Tickets)": 360, "Backlog Health (% tickets \u2264 2 days)": 0.30 } },
+    { "name": "CSSR Agent 1", "function": "cssr", "actuals": { "Sentiment Score": 0.90, "Brand Voice / Tone QA": 0.97, "First Response Time (Social)": 10, "Resolution Time (Social)": 180, "Volume / Productivity": 55, "Escalation Rate": 0.05 } },
+    { "name": "CSSR Agent 2", "function": "cssr", "actuals": { "Sentiment Score": 0.85, "Brand Voice / Tone QA": 0.93, "First Response Time (Social)": 15, "Resolution Time (Social)": 230, "Volume / Productivity": 48, "Escalation Rate": 0.09 } },
+    { "name": "CSSR Agent 3", "function": "cssr", "actuals": { "Sentiment Score": 0.75, "Brand Voice / Tone QA": 0.88, "First Response Time (Social)": 25, "Resolution Time (Social)": 350, "Volume / Productivity": 38, "Escalation Rate": 0.15 } },
+    { "name": "CSSR Agent 4", "function": "cssr", "actuals": { "Sentiment Score": 0.65, "Brand Voice / Tone QA": 0.80, "First Response Time (Social)": 50, "Resolution Time (Social)": 420, "Volume / Productivity": 28, "Escalation Rate": 0.28 } }
+  ],
   "rollout": [
     { "phase": "Days 1-30", "name": "Diagnose", "activeWeight": 0, "description": "Scorecard runs in observation-only mode. Real Actuals are collected for every metric to build a true root-cause map, but weights are not yet used to evaluate performance formally." },
     { "phase": "Days 31-60", "name": "Structure", "activeWeight": 0.5, "description": "Weights and goals are formalized and communicated to the team. The scorecard runs in shadow/pilot mode (50% operational weight) alongside the new escalation matrix, SOP library and attendance policy." },
