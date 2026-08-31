@@ -3,39 +3,40 @@
     "company": "Kitsch",
     "department": "Customer Experience Department",
     "subtitle": "CSR (Tickets) + CSSR (Social Media)",
-    "version": "v1.1.0",
+    "version": "v1.3.0",
     "lastUpdated": "2026-08-31",
-    "contractStartDate": "2026-09-07"
+    "contractStartDate": "2026-09-07",
+    "scorePeriod": "Diagnostic Phase \u2014 Sample Data"
   },
   "tiers": [
-    { "name": "Platinum", "min": 1.0,  "color": "#C9A9E9", "emoji": "\uD83D\uDC8E" },
-    { "name": "Gold",     "min": 0.95, "color": "#8FD9A8", "emoji": "\uD83C\uDFC6" },
-    { "name": "Silver",   "min": 0.85, "color": "#FFE39A", "emoji": "\u2B50" },
-    { "name": "Needs Improvement", "min": 0, "color": "#FFAFAF", "emoji": "\uD83D\uDD27" }
+    { "name": "Platinum", "min": 1.0,  "color": "#C9A9E9", "textColor": "#7A4FC9", "emoji": "\uD83D\uDC8E" },
+    { "name": "Gold",     "min": 0.95, "color": "#8FD9A8", "textColor": "#1F7A45", "emoji": "\uD83C\uDFC6" },
+    { "name": "Silver",   "min": 0.85, "color": "#FFE39A", "textColor": "#8A6B00", "emoji": "\u2B50" },
+    { "name": "Needs Improvement", "min": 0, "color": "#FFAFAF", "textColor": "#B23A3A", "emoji": "\uD83D\uDD27" }
   ],
   "csr": {
     "label": "CSR \u2014 Tickets (Email / Chat / Phone)",
     "headcount": 8,
     "metrics": [
-      { "name": "QA Score", "weight": 0.20, "goal": 0.95, "cap": 0.90, "unit": "%", "actual": 0.91, "direction": "higher", "note": "Typical industry benchmark for ticket quality is 90-95%." },
-      { "name": "SLA Attainment", "weight": 0.20, "goal": 0.90, "cap": 0.85, "unit": "%", "actual": 0.82, "direction": "higher", "note": "% of tickets resolved within the committed SLA window, per issue category." },
-      { "name": "Attendance / Adherence", "weight": 0.15, "goal": 0.97, "cap": 0.95, "unit": "%", "actual": 0.88, "direction": "higher", "note": "Directly tied to the reported attendance / hours-not-met issue driving current gaps." },
-      { "name": "CSAT", "weight": 0.15, "goal": 0.90, "cap": 0.85, "unit": "%", "actual": 0.86, "direction": "higher", "note": "Post-interaction satisfaction survey. Ecommerce/retail benchmark typically 85-92%." },
-      { "name": "AHT (Average Handle Time)", "weight": 0.10, "goal": 480, "cap": 600, "unit": "sec", "actual": 540, "direction": "lower", "note": "8-min goal / 10-min cap. Balanced against QA, not optimized in isolation." },
-      { "name": "First Response Time (Tickets)", "weight": 0.10, "goal": 240, "cap": 360, "unit": "min", "actual": 300, "direction": "lower", "note": "4h goal / 6h cap. Reasonable standard for email/chat tickets in ecommerce." },
-      { "name": "Backlog Health (% tickets \u2264 2 days)", "weight": 0.10, "goal": 0.80, "cap": 0.65, "unit": "%", "actual": 0.45, "direction": "higher", "note": "Core metric for the central problem: aged, unresolved tickets." }
+      { "name": "QA Score", "short": "QA", "weight": 0.20, "goal": 0.95, "cap": 0.90, "unit": "%", "actual": 0.91, "direction": "higher", "note": "Typical industry benchmark for ticket quality is 90-95%." },
+      { "name": "SLA Attainment", "short": "SLA", "weight": 0.20, "goal": 0.90, "cap": 0.85, "unit": "%", "actual": 0.82, "direction": "higher", "note": "% of tickets resolved within the committed SLA window, per issue category." },
+      { "name": "Attendance / Adherence", "short": "ADH", "weight": 0.15, "goal": 0.97, "cap": 0.95, "unit": "%", "actual": 0.88, "direction": "higher", "note": "Directly tied to the reported attendance / hours-not-met issue driving current gaps." },
+      { "name": "CSAT", "short": "CSAT", "weight": 0.15, "goal": 0.90, "cap": 0.85, "unit": "%", "actual": 0.86, "direction": "higher", "note": "Post-interaction satisfaction survey. Ecommerce/retail benchmark typically 85-92%." },
+      { "name": "AHT (Average Handle Time)", "short": "AHT", "weight": 0.10, "goal": 480, "cap": 600, "unit": "sec", "actual": 540, "direction": "lower", "note": "8-min goal / 10-min cap. Balanced against QA, not optimized in isolation." },
+      { "name": "First Response Time (Tickets)", "short": "FRT", "weight": 0.10, "goal": 240, "cap": 360, "unit": "min", "actual": 300, "direction": "lower", "note": "4h goal / 6h cap. Reasonable standard for email/chat tickets in ecommerce." },
+      { "name": "Backlog Health (% tickets \u2264 2 days)", "short": "BACKLOG", "weight": 0.10, "goal": 0.80, "cap": 0.65, "unit": "%", "actual": 0.45, "direction": "higher", "note": "Core metric for the central problem: aged, unresolved tickets." }
     ]
   },
   "cssr": {
     "label": "CSSR \u2014 Social Media (FB / IG / TikTok)",
     "headcount": 4,
     "metrics": [
-      { "name": "Sentiment Score", "weight": 0.20, "goal": 0.85, "cap": 0.75, "unit": "%", "actual": 0.72, "direction": "higher", "note": "% of resolved interactions tagged positive/neutral. Protects brand reputation." },
-      { "name": "Brand Voice / Tone QA", "weight": 0.20, "goal": 0.95, "cap": 0.90, "unit": "%", "actual": 0.88, "direction": "higher", "note": "Qualitative scorecard check: empathy, on-brand tone, public-facing risk management." },
-      { "name": "First Response Time (Social)", "weight": 0.20, "goal": 15, "cap": 30, "unit": "min", "actual": 45, "direction": "lower", "note": "15-min goal / 30-min cap. 73% of social media users switch brands if response is slow." },
-      { "name": "Resolution Time (Social)", "weight": 0.15, "goal": 240, "cap": 480, "unit": "min", "actual": 390, "direction": "lower", "note": "4h goal / 8h cap from first contact to full thread resolution." },
-      { "name": "Volume / Productivity", "weight": 0.15, "goal": 50, "cap": 35, "unit": "int/agent/day", "actual": 33, "direction": "higher", "note": "Comments + DMs resolved per agent per shift, across FB/IG/TikTok." },
-      { "name": "Escalation Rate", "weight": 0.10, "goal": 0.10, "cap": 0.20, "unit": "%", "actual": 0.24, "direction": "lower", "note": "% of interactions requiring escalation to Tier 2 or another department." }
+      { "name": "Sentiment Score", "short": "SENT", "weight": 0.20, "goal": 0.85, "cap": 0.75, "unit": "%", "actual": 0.72, "direction": "higher", "note": "% of resolved interactions tagged positive/neutral. Protects brand reputation." },
+      { "name": "Brand Voice / Tone QA", "short": "VOICE", "weight": 0.20, "goal": 0.95, "cap": 0.90, "unit": "%", "actual": 0.88, "direction": "higher", "note": "Qualitative scorecard check: empathy, on-brand tone, public-facing risk management." },
+      { "name": "First Response Time (Social)", "short": "FRT", "weight": 0.20, "goal": 15, "cap": 30, "unit": "min", "actual": 45, "direction": "lower", "note": "15-min goal / 30-min cap. 73% of social media users switch brands if response is slow." },
+      { "name": "Resolution Time (Social)", "short": "RES", "weight": 0.15, "goal": 240, "cap": 480, "unit": "min", "actual": 390, "direction": "lower", "note": "4h goal / 8h cap from first contact to full thread resolution." },
+      { "name": "Volume / Productivity", "short": "VOL", "weight": 0.15, "goal": 50, "cap": 35, "unit": "int/agent/day", "actual": 33, "direction": "higher", "note": "Comments + DMs resolved per agent per shift, across FB/IG/TikTok." },
+      { "name": "Escalation Rate", "short": "ESC", "weight": 0.10, "goal": 0.10, "cap": 0.20, "unit": "%", "actual": 0.24, "direction": "lower", "note": "% of interactions requiring escalation to Tier 2 or another department." }
     ]
   },
   "agents": [
@@ -52,6 +53,21 @@
     { "name": "CSSR Agent 3", "function": "cssr", "actuals": { "Sentiment Score": 0.75, "Brand Voice / Tone QA": 0.88, "First Response Time (Social)": 25, "Resolution Time (Social)": 350, "Volume / Productivity": 38, "Escalation Rate": 0.15 } },
     { "name": "CSSR Agent 4", "function": "cssr", "actuals": { "Sentiment Score": 0.65, "Brand Voice / Tone QA": 0.80, "First Response Time (Social)": 50, "Resolution Time (Social)": 420, "Volume / Productivity": 28, "Escalation Rate": 0.28 } }
   ],
+  "metricTips": {
+    "QA Score": { "icon": "\uD83C\uDFAF", "title": "Boost your QA Score", "advice": "Your QA Score is {actual} (goal \u2265{goal}). Review your last audited interactions with your TL and focus on the specific rubric items you're losing points on." },
+    "SLA Attainment": { "icon": "\u23F1\uFE0F", "title": "Improve SLA Attainment", "advice": "You're at {actual} SLA (goal \u2265{goal}). Sort your queue by ticket age each morning and flag anything close to breaching before it happens." },
+    "Attendance / Adherence": { "icon": "\uD83D\uDCC5", "title": "Strengthen Attendance/Adherence", "advice": "Adherence is at {actual} (goal \u2265{goal}). Stick closely to your scheduled breaks and login/logout times, and flag schedule conflicts to your TL as early as possible." },
+    "CSAT": { "icon": "\uD83D\uDCAC", "title": "Raise your CSAT", "advice": "CSAT is {actual} (goal \u2265{goal}). Add a personal touch to your closings and confirm the issue is fully resolved before ending the interaction." },
+    "AHT (Average Handle Time)": { "icon": "\u23F3", "title": "Optimize your AHT", "advice": "Your AHT is {actual} (goal \u2264{goal}). Practice scripts and use tool shortcuts to reduce hold and after-call work time." },
+    "First Response Time (Tickets)": { "icon": "\uD83D\uDCE8", "title": "Speed up First Response", "advice": "First response is {actual} (goal \u2264{goal}). Check your queue every 15\u201320 minutes and send a quick acknowledgment even before full resolution." },
+    "Backlog Health (% tickets \u2264 2 days)": { "icon": "\uD83D\uDDC2\uFE0F", "title": "Clear your Backlog", "advice": "Backlog Health is {actual} (goal \u2265{goal}). Start each shift by clearing tickets older than 2 days before touching new ones." },
+    "Sentiment Score": { "icon": "\uD83D\uDE0A", "title": "Improve Sentiment Score", "advice": "Sentiment is {actual} (goal \u2265{goal}). Lead with empathy on negative comments and acknowledge frustration before offering a solution." },
+    "Brand Voice / Tone QA": { "icon": "\uD83C\uDFA8", "title": "Sharpen Brand Voice", "advice": "Brand Voice/Tone QA is {actual} (goal \u2265{goal}). Re-read the brand tone guide and mirror the approved phrasing examples in your replies." },
+    "First Response Time (Social)": { "icon": "\u26A1", "title": "React Faster on Social", "advice": "Your first response is {actual} (goal \u2264{goal}). Check priority inboxes every 5\u201310 minutes during peak hours \u2014 even a quick acknowledgment buys time." },
+    "Resolution Time (Social)": { "icon": "\uD83E\uDDF5", "title": "Close Threads Faster", "advice": "Resolution time is {actual} (goal \u2264{goal}). Move complex cases to DM early and use saved replies for common issues to speed up resolution." },
+    "Volume / Productivity": { "icon": "\uD83D\uDCC8", "title": "Increase Productivity", "advice": "You're handling {actual} (goal \u2265{goal}). Batch similar comment types together and use canned responses for repetitive questions." },
+    "Escalation Rate": { "icon": "\uD83D\uDEA8", "title": "Reduce Escalations", "advice": "Escalation rate is {actual} (goal \u2264{goal}). Review the escalation matrix \u2014 some cases you're passing up may be resolvable directly with the right macro." }
+  },
   "rollout": [
     { "phase": "Days 1-30", "name": "Diagnose", "activeWeight": 0, "description": "Scorecard runs in observation-only mode. Real Actuals are collected for every metric to build a true root-cause map, but weights are not yet used to evaluate performance formally." },
     { "phase": "Days 31-60", "name": "Structure", "activeWeight": 0.5, "description": "Weights and goals are formalized and communicated to the team. The scorecard runs in shadow/pilot mode (50% operational weight) alongside the new escalation matrix, SOP library and attendance policy." },
