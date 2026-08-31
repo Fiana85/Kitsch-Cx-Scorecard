@@ -1,6 +1,6 @@
 # kitsch-cx-scorecard
 
-Kitsch Customer Experience Scorecard — CSR + CSSR. Updated: v1.5.1
+Kitsch Customer Experience Scorecard — CSR + CSSR. Updated: v1.5.2
 
 Interactive, mobile-friendly scorecard for the Kitsch Customer Experience department (CSR — tickets, and CSSR — social media), built to support the 30-60-90 Day Improvement Plan.
 
@@ -98,8 +98,12 @@ Each entry in `metricTips` is keyed by the exact metric name and supports `{actu
 | `index.html` | App shell, layout and styling (Agent View + Team View + 1:1 modal) |
 | `app.js` | Rendering, scoring logic, agent picker, tips engine, TL Mode gating, Scorecard table, Top Performers, 1:1 modal logic + printable/PDF export, and edit/reset handling |
 | `data.json` | Source data: metrics, weights, goals, caps, headcount, agent roster, tip content, culture content, rollout phases |
-| `kitsch-logo.png` | Kitsch wordmark logo — used in the header, the Our Culture hero, and the printable 1:1 report |
+| `kitsch-logo.png` | Kitsch wordmark logo (source file, kept for reference/reuse — as of v1.5.2 it is no longer required at runtime, see note below) |
 | `.github/workflows/static.yml` | GitHub Pages deployment |
+
+## Troubleshooting: logo not showing up
+
+As of v1.5.2, the Kitsch logo is embedded directly inside `index.html` as a base64 data URI (in both the header and the "Our Culture" hero), instead of being loaded from the separate `kitsch-logo.png` file. This means the logo will always display correctly as long as `index.html` is up to date — you no longer need to upload `kitsch-logo.png` at all for the logo to appear (it's kept in the repo only as a reference/source file). If the logo still doesn't show up, it means `index.html` itself wasn't updated to the latest version — re-upload it.
 
 ## Troubleshooting: blank / empty-looking page
 
