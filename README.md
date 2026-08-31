@@ -1,6 +1,6 @@
 # kitsch-cx-scorecard
 
-Kitsch Customer Experience Scorecard — CSR + CSSR. Updated: v1.3.0
+Kitsch Customer Experience Scorecard — CSR + CSSR. Updated: v1.4.0
 
 Interactive, mobile-friendly scorecard for the Kitsch Customer Experience department (CSR — tickets, and CSSR — social media), built to support the 30-60-90 Day Improvement Plan.
 
@@ -36,7 +36,7 @@ Click **1:1** on any agent row in the Scorecard tab to open a full coaching sess
 - **TL Notes** and **Agent Comments** free-text fields.
 - **Next 1:1** date picker.
 - **Previous 1:1s** — full history of past sessions for that agent, shown newest-first.
-- **Copy** (copies a plain-text summary to the clipboard), **Download** (saves a `.txt` file), and **Save** (stores the session in `localStorage`, appended to that agent's history). A confirmation prompt protects against accidentally closing unsaved changes.
+- **Copy** (copies a plain-text summary to the clipboard), **🖨️ Print / Save as PDF** (opens a polished, standalone printable page in a new tab — same clean report layout as the Performance Tracker's 1:1 export, with a metrics table, only the sections that have content, and a "Generado desde Kitsch CX Scorecard" footer with timestamp; use the browser's print dialog to save it as PDF), and **Save** (stores the session in `localStorage`, appended to that agent's history). A confirmation prompt protects against accidentally closing unsaved changes.
 - Footnote reminder: sessions are saved only on the current device/browser (`localStorage`) and are not shared or synced anywhere.
 
 ## How scoring works
@@ -65,7 +65,7 @@ Each agent needs a `name`, a `function` (`"csr"` or `"cssr"`), and an `actuals` 
 { "name": "Jane Doe", "function": "csr", "actuals": { "QA Score": 0.93, "SLA Attainment": 0.88, "Attendance / Adherence": 0.95, "CSAT": 0.88, "AHT (Average Handle Time)": 500, "First Response Time (Tickets)": 260, "Backlog Health (% tickets ≤ 2 days)": 0.70 } }
 ```
 
-Each metric definition (under `csr.metrics` / `cssr.metrics`) also has a `short` field used as the column header abbreviation in the Scorecard table (e.g. `"short": "QA"`, `"short": "AHT"`).
+Each metric definition (under `csr.metrics` / `cssr.metrics`) also has a `short` field used as the column header abbreviation in the Scorecard table and the printable 1:1 report (e.g. `"short": "QA"`, `"short": "AHT"`).
 
 ### Customizing tips in `data.json`
 
@@ -80,17 +80,16 @@ Each entry in `metricTips` is keyed by the exact metric name and supports `{actu
 | File | Purpose |
 |---|---|
 | `index.html` | App shell, layout and styling (Agent View + Team View + 1:1 modal) |
-| `app.js` | Rendering, scoring logic, agent picker, tips engine, TL Mode gating, Scorecard table, Top Performers, 1:1 modal logic, and edit/reset handling |
+| `app.js` | Rendering, scoring logic, agent picker, tips engine, TL Mode gating, Scorecard table, Top Performers, 1:1 modal logic + printable/PDF export, and edit/reset handling |
 | `data.json` | Source data: metrics, weights, goals, caps, headcount, agent roster, tip content, rollout phases |
 | `.github/workflows/static.yml` | GitHub Pages deployment |
 
 ## Design
 
-Soft rainbow pastel palette (pink · peach · yellow · mint · sky · lavender) with generous spacing, rounded cards, and a fully responsive layout — optimized for both desktop and mobile. The Scorecard table scrolls horizontally on narrow screens to preserve readability of the dense metric columns.
+Soft rainbow pastel palette (pink · peach · yellow · mint · sky · lavender) with generous spacing, rounded cards, and a fully responsive layout — optimized for both desktop and mobile. The Scorecard table scrolls horizontally on narrow screens to preserve readability of the dense metric columns. The printable 1:1 report opens in its own clean, print-optimized tab (white background, no app chrome) so it can be printed or saved as a PDF directly from the browser's print dialog.
 
 ## Roadmap ideas
 
-- PDF export of the individual agent scorecard or a 1:1 session.
 - Historical trend view once monthly snapshots accumulate.
 - Weekly newsletter tab (highlight top performers, birthdays, etc.), similar to the Performance Tracker Lite project.
 - Optional real authentication/roles instead of the local TL Mode toggle, if this needs to be shared across multiple devices.
