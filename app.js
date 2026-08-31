@@ -1,13 +1,19 @@
 /* =========================================================
    Kitsch · Customer Experience Scorecard
-   Base app logic — reads data.json, allows editing "Actual"
-   values and headcounts, recalculates attainment/tiers live,
-   and persists edits in localStorage.
+   App logic — reads data.json, allows editing "Actual"
+   values (function-level and per-agent) and headcounts,
+   recalculates attainment/tiers live, and persists edits
+   in localStorage.
 ========================================================= */
 
-const STORAGE_KEY = "kitschScorecardOverrides_v1";
+const STORAGE_KEY = "kitschScorecardOverrides_v2";
 let DATA = null;       // raw data.json content
 let STATE = null;      // working copy (data.json + overrides applied)
+
+let agentFilter = "all";
+let agentSearchTerm = "";
+let agentSort = "score-desc";
+const openAgentDetails = new Set(); // agent indices currently expanded
 
 /* ---------------- Utility formatting ---------------- */
 function fmtUnit(value, unit) {
@@ -47,15 +53,32 @@ function computeAttainment(metric) {
 
 function computeFunctionScore(fn) {
   let weighted = 0;
-  let weightSum = 0;
   const rows = fn.metrics.map((m) => {
     const { attainment, belowCap } = computeAttainment(m);
     weighted += attainment * m.weight;
-    weightSum += m.weight;
     return { ...m, attainment, belowCap };
   });
-  const score = weightSum > 0 ? weighted / weightSum * weightSum : 0; // weights already sum ~1
   return { rows, score: weighted };
+}
+
+/* ---- Agent-level scoring: reuses the parent function's
+   weight/goal/cap/direction config, only "actual" changes
+   per agent. This keeps agents always in sync if goals are
+   edited in data.json. ---- */
+function computeAgentMetrics(agent) {
+  const fn = STATE[agent.function];
+  return fn.metrics.map((m) => {
+    const actual = agent.actuals[m.name];
+    const modified = { ...m, actual };
+    const { attainment, belowCap } = computeAttainment(modified);
+    return { ...modified, attainment, belowCap };
+  });
+}
+function computeAgentScore(agent) {
+  const rows = computeAgentMetrics(agent);
+  let weighted = 0;
+  rows.forEach((r) => (weighted += r.attainment * r.weight));
+  return weighted;
 }
 
 function getTier(score) {
@@ -77,9 +100,9 @@ function statusColors(attainment, belowCap) {
 function loadOverrides() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { csr: {}, cssr: {}, headcount: {} };
+    return raw ? JSON.parse(raw) : { csr: {}, cssr: {}, headcount: {}, agents: {} };
   } catch (e) {
-    return { csr: {}, cssr: {}, headcount: {} };
+    return { csr: {}, cssr: {}, headcount: {}, agents: {} };
   }
 }
 function saveOverrides(overrides) {
@@ -100,10 +123,21 @@ function buildState() {
     });
   });
 
+  if (overrides.agents && clone.agents) {
+    clone.agents.forEach((agent, idx) => {
+      const agentOverride = overrides.agents[idx];
+      if (agentOverride) {
+        Object.keys(agentOverride).forEach((metricName) => {
+          agent.actuals[metricName] = agentOverride[metricName];
+        });
+      }
+    });
+  }
+
   STATE = clone;
 }
 
-/* ---------------- Rendering: Metric cards ---------------- */
+/* ---------------- Rendering: Metric cards (function-level) ---------------- */
 function renderMetrics(containerId, fnKey) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
@@ -237,6 +271,128 @@ function renderOverview() {
   return deptScore;
 }
 
+/* ---------------- Rendering: Agents view ---------------- */
+function getFilteredSortedAgents() {
+  if (!STATE.agents) return [];
+
+  let list = STATE.agents.map((agent, idx) => {
+    const score = computeAgentScore(agent);
+    return { agent, idx, score };
+  });
+
+  if (agentFilter !== "all") {
+    list = list.filter((a) => a.agent.function === agentFilter);
+  }
+  if (agentSearchTerm.trim() !== "") {
+    const term = agentSearchTerm.trim().toLowerCase();
+    list = list.filter((a) => a.agent.name.toLowerCase().includes(term));
+  }
+
+  if (agentSort === "score-desc") {
+    list.sort((a, b) => b.score - a.score);
+  } else if (agentSort === "score-asc") {
+    list.sort((a, b) => a.score - b.score);
+  } else if (agentSort === "name-asc") {
+    list.sort((a, b) => a.agent.name.localeCompare(b.agent.name));
+  }
+
+  return list;
+}
+
+function renderAgents() {
+  const grid = document.getElementById("agentsGrid");
+  const countLabel = document.getElementById("agentCountLabel");
+  const list = getFilteredSortedAgents();
+
+  countLabel.textContent = `(${list.length} of ${STATE.agents ? STATE.agents.length : 0})`;
+
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="no-agents-msg" style="grid-column:1/-1;">No agents match your search/filter. 🌈</div>`;
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  list.forEach(({ agent, idx, score }) => {
+    const tier = getTier(score);
+    const isOpen = openAgentDetails.has(idx);
+    const rows = computeAgentMetrics(agent);
+
+    const card = document.createElement("div");
+    card.className = "agent-card";
+    card.innerHTML = `
+      <div class="agent-card-head">
+        <p class="agent-name">${agent.name}</p>
+        <span class="agent-fn-badge ${agent.function}">${agent.function === "csr" ? "🎫 CSR" : "💬 CSSR"}</span>
+      </div>
+      <div class="agent-score-row">
+        <div class="agent-score">${fmtPct(score)}</div>
+        <div class="tier-pill" style="background:${tier.color};color:var(--ink);">${tier.emoji} ${tier.name}</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${(score*100).toFixed(1)}%;background:${tier.color};"></div></div>
+      <button class="agent-toggle" data-idx="${idx}">${isOpen ? "▲ Hide metric breakdown" : "▼ View metric breakdown"}</button>
+      <div class="agent-detail ${isOpen ? "open" : ""}" data-detail-idx="${idx}">
+        ${rows.map((r) => {
+          const colors = statusColors(r.attainment, r.belowCap);
+          return `
+            <div class="agent-metric-row">
+              <div class="agent-metric-top">
+                <span class="agent-metric-name">${r.name}</span>
+                <input type="number" step="any" class="agent-metric-input" data-idx="${idx}" data-metric="${r.name}" value="${r.actual}" />
+              </div>
+              <div class="agent-metric-track">
+                <div class="agent-metric-fill" style="width:${(r.attainment*100).toFixed(1)}%;background:${colors.bg};"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink-soft);">
+                <span>Goal ${fmtUnit(r.goal, r.unit)} / Min ${fmtUnit(r.cap, r.unit)}</span>
+                <span style="font-weight:700;">${fmtPct(r.attainment)}</span>
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  grid.querySelectorAll(".agent-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const idx = parseInt(btn.dataset.idx, 10);
+      if (openAgentDetails.has(idx)) {
+        openAgentDetails.delete(idx);
+      } else {
+        openAgentDetails.add(idx);
+      }
+      renderAgents();
+    });
+  });
+
+  grid.querySelectorAll(".agent-metric-input").forEach((input) => {
+    input.addEventListener("input", onAgentMetricChange);
+  });
+}
+
+function initAgentControls() {
+  document.querySelectorAll(".filter-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      document.querySelectorAll(".filter-chip").forEach((c) => c.classList.remove("active"));
+      chip.classList.add("active");
+      agentFilter = chip.dataset.filter;
+      renderAgents();
+    });
+  });
+
+  document.getElementById("agentSearch").addEventListener("input", (e) => {
+    agentSearchTerm = e.target.value;
+    renderAgents();
+  });
+
+  document.getElementById("agentSort").addEventListener("change", (e) => {
+    agentSort = e.target.value;
+    renderAgents();
+  });
+}
+
 /* ---------------- Rendering: Rollout ---------------- */
 function renderRollout() {
   const track = document.getElementById("rolloutTrack");
@@ -314,6 +470,23 @@ function onHeadcountChange(e) {
   renderAll(false);
 }
 
+function onAgentMetricChange(e) {
+  const idx = parseInt(e.target.dataset.idx, 10);
+  const metricName = e.target.dataset.metric;
+  const value = parseFloat(e.target.value);
+  if (isNaN(value)) return;
+
+  const overrides = loadOverrides();
+  if (!overrides.agents) overrides.agents = {};
+  if (!overrides.agents[idx]) overrides.agents[idx] = {};
+  overrides.agents[idx][metricName] = value;
+  saveOverrides(overrides);
+
+  buildState();
+  // Keep the detail panel open for the agent being edited, just re-render agents view.
+  renderAgents();
+}
+
 /* ---------------- Master render ---------------- */
 function renderAll(reflowMeta = true) {
   if (reflowMeta) {
@@ -328,6 +501,7 @@ function renderAll(reflowMeta = true) {
   renderFunctionTotal("csrTotal", "csr");
   renderMetrics("cssrMetrics", "cssr");
   renderFunctionTotal("cssrTotal", "cssr");
+  renderAgents();
   renderRollout();
 }
 
@@ -348,6 +522,14 @@ function initTabs() {
 function initReset() {
   document.getElementById("resetBtn").addEventListener("click", () => {
     localStorage.removeItem(STORAGE_KEY);
+    openAgentDetails.clear();
+    agentFilter = "all";
+    agentSearchTerm = "";
+    agentSort = "score-desc";
+    document.getElementById("agentSearch").value = "";
+    document.getElementById("agentSort").value = "score-desc";
+    document.querySelectorAll(".filter-chip").forEach((c) => c.classList.remove("active"));
+    document.querySelector('.filter-chip[data-filter="all"]').classList.add("active");
     buildState();
     renderAll();
   });
@@ -360,6 +542,7 @@ async function init() {
   buildState();
   initTabs();
   initReset();
+  initAgentControls();
   renderAll();
 }
 
