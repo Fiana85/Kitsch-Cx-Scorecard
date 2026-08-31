@@ -56,7 +56,7 @@ h1,h2,h3,.brand{font-family:'Poppins',sans-serif;}
 }
 header{
   padding:28px 24px 18px;
-  max-width:1200px;
+  max-width:1280px;
   margin:0 auto;
   display:flex;
   flex-wrap:wrap;
@@ -91,7 +91,7 @@ header{
 .badge.phase{background:linear-gradient(90deg,var(--rb-mint),var(--rb-sky));color:var(--ink);}
 
 /* ---------- TABS ---------- */
-.tabs-wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+.tabs-wrap{max-width:1280px;margin:0 auto;padding:0 24px;}
 .tabs{
   display:flex;gap:8px;
   background:var(--card-bg);
@@ -117,7 +117,7 @@ header{
 }
 
 /* ---------- MAIN ---------- */
-main{max-width:1200px;margin:0 auto;padding:24px;}
+main{max-width:1280px;margin:0 auto;padding:24px;}
 .view{display:none;animation:fadeIn .35s ease;}
 .view.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -125,6 +125,7 @@ main{max-width:1200px;margin:0 auto;padding:24px;}
 .section-title{
   display:flex;align-items:center;gap:10px;
   margin:0 0 16px;font-size:1.15rem;font-weight:700;
+  flex-wrap:wrap;
 }
 .section-title .dot{width:10px;height:10px;border-radius:50%;}
 
@@ -175,7 +176,7 @@ main{max-width:1200px;margin:0 auto;padding:24px;}
 }
 .legend .chip .sw{width:10px;height:10px;border-radius:50%;}
 
-/* ---------- METRIC TABLE ---------- */
+/* ---------- METRIC TABLE (function scorecards) ---------- */
 .metrics-wrap{display:flex;flex-direction:column;gap:12px;}
 .metric-card{
   background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);
@@ -209,6 +210,69 @@ main{max-width:1200px;margin:0 auto;padding:24px;}
 }
 .total-row .score-big{font-size:2rem;}
 
+/* ---------- AGENTS VIEW ---------- */
+.agents-toolbar{
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  margin-bottom:18px;
+}
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-chip{
+  border:1.5px solid var(--border);background:var(--card-bg);cursor:pointer;
+  padding:8px 16px;border-radius:999px;font-weight:600;font-size:0.85rem;color:var(--ink-soft);
+  transition:all .15s ease;
+}
+.filter-chip.active{
+  color:var(--ink);border-color:transparent;
+  background:linear-gradient(90deg,var(--rb-pink),var(--rb-lavender));
+}
+.agent-search{
+  padding:9px 16px;border-radius:999px;border:1.5px solid var(--border);
+  font-family:'Inter',sans-serif;font-size:0.85rem;min-width:220px;
+  background:var(--card-bg);color:var(--ink);
+}
+.agent-search:focus{outline:none;border-color:var(--rb-lavender);}
+.sort-select{
+  padding:9px 14px;border-radius:999px;border:1.5px solid var(--border);
+  font-family:'Inter',sans-serif;font-size:0.85rem;background:var(--card-bg);color:var(--ink-soft);
+  font-weight:600;cursor:pointer;
+}
+
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.agent-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 20px;box-shadow:var(--shadow);transition:box-shadow .2s ease;
+}
+.agent-card:hover{box-shadow:var(--shadow-hover);}
+.agent-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.agent-name{font-weight:700;font-size:1rem;margin:0;}
+.agent-fn-badge{
+  font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap;
+}
+.agent-fn-badge.csr{background:var(--rb-peach);color:#8A5A00;}
+.agent-fn-badge.cssr{background:var(--rb-sky);color:#1a5fb4;}
+.agent-score-row{display:flex;align-items:baseline;gap:10px;margin:10px 0 4px;}
+.agent-score{font-size:1.9rem;font-weight:800;font-family:'Poppins',sans-serif;}
+.agent-card .progress-track{margin-top:8px;}
+.agent-toggle{
+  margin-top:12px;background:none;border:none;cursor:pointer;color:#6a5ac8;
+  font-weight:700;font-size:0.8rem;padding:0;display:flex;align-items:center;gap:4px;
+}
+.agent-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);flex-direction:column;gap:10px;}
+.agent-detail.open{display:flex;}
+.agent-metric-row{display:flex;flex-direction:column;gap:4px;}
+.agent-metric-top{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;}
+.agent-metric-name{font-weight:600;color:var(--ink-soft);}
+.agent-metric-input{
+  width:78px;padding:5px 7px;border-radius:7px;border:1.5px solid var(--rb-sky);
+  font-weight:700;text-align:center;font-family:'Inter',sans-serif;color:#1a5fb4;font-size:0.8rem;
+}
+.agent-metric-track{width:100%;height:7px;border-radius:5px;background:#F0EEF7;overflow:hidden;}
+.agent-metric-fill{height:100%;border-radius:5px;}
+.no-agents-msg{
+  text-align:center;color:var(--ink-soft);padding:40px 20px;font-weight:600;
+  background:var(--card-bg);border:1px dashed var(--border);border-radius:var(--radius);
+}
+
 /* ---------- ROLLOUT ---------- */
 .rollout-track{display:flex;flex-direction:column;gap:18px;position:relative;}
 .phase-card{
@@ -234,7 +298,7 @@ main{max-width:1200px;margin:0 auto;padding:24px;}
 
 /* ---------- FOOTER / ACTIONS ---------- */
 .actions-bar{
-  max-width:1200px;margin:26px auto 0;padding:0 24px;
+  max-width:1280px;margin:26px auto 0;padding:0 24px;
   display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;
 }
 .btn{
@@ -260,6 +324,9 @@ footer{
   .metric-card > div{width:100%;}
   .metric-sub{margin-top:6px;}
   .attain-block{margin-top:4px;}
+  .agents-grid{grid-template-columns:1fr;}
+  .agents-toolbar{flex-direction:column;align-items:stretch;}
+  .agent-search{min-width:0;width:100%;}
 }
 @media (max-width: 480px){
   header{padding:20px 16px 14px;}
@@ -294,6 +361,7 @@ footer{
     <button class="tab-btn active" data-view="overview">📊 Overview</button>
     <button class="tab-btn" data-view="csr">🎫 CSR Scorecard</button>
     <button class="tab-btn" data-view="cssr">💬 CSSR Scorecard</button>
+    <button class="tab-btn" data-view="agents">👤 Agents</button>
     <button class="tab-btn" data-view="rollout">🗓️ 30-60-90 Rollout</button>
   </div>
 </div>
@@ -320,6 +388,27 @@ footer{
     <div class="section-title"><span class="dot" style="background:var(--rb-sky);"></span><span id="cssrLabel">CSSR Scorecard</span></div>
     <div class="metrics-wrap" id="cssrMetrics"></div>
     <div class="total-row" id="cssrTotal"></div>
+  </section>
+
+  <!-- AGENTS -->
+  <section class="view" id="view-agents">
+    <div class="section-title"><span class="dot" style="background:var(--rb-yellow);"></span>Agent Scorecards <span id="agentCountLabel" style="color:var(--ink-soft);font-weight:600;font-size:0.85rem;"></span></div>
+    <div class="agents-toolbar">
+      <div class="filter-chips" id="agentFilterChips">
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="csr">🎫 CSR</button>
+        <button class="filter-chip" data-filter="cssr">💬 CSSR</button>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <input type="text" id="agentSearch" class="agent-search" placeholder="🔎 Search agent name…" />
+        <select id="agentSort" class="sort-select">
+          <option value="score-desc">Score: High → Low</option>
+          <option value="score-asc">Score: Low → High</option>
+          <option value="name-asc">Name: A → Z</option>
+        </select>
+      </div>
+    </div>
+    <div class="agents-grid" id="agentsGrid"></div>
   </section>
 
   <!-- ROLLOUT -->
