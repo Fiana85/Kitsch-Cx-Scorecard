@@ -3,7 +3,7 @@
     "company": "Kitsch",
     "department": "Customer Experience Department",
     "subtitle": "CSR (Tickets) + CSSR (Social Media)",
-    "version": "v1.3.0",
+    "version": "v1.5.1",
     "lastUpdated": "2026-08-31",
     "contractStartDate": "2026-09-07",
     "scorePeriod": "Diagnostic Phase \u2014 Sample Data"
@@ -67,6 +67,74 @@
     "Resolution Time (Social)": { "icon": "\uD83E\uDDF5", "title": "Close Threads Faster", "advice": "Resolution time is {actual} (goal \u2264{goal}). Move complex cases to DM early and use saved replies for common issues to speed up resolution." },
     "Volume / Productivity": { "icon": "\uD83D\uDCC8", "title": "Increase Productivity", "advice": "You're handling {actual} (goal \u2265{goal}). Batch similar comment types together and use canned responses for repetitive questions." },
     "Escalation Rate": { "icon": "\uD83D\uDEA8", "title": "Reduce Escalations", "advice": "Escalation rate is {actual} (goal \u2264{goal}). Review the escalation matrix \u2014 some cases you're passing up may be resolvable directly with the right macro." }
+  },
+  "culture": {
+    "tagline": "Little indulgences, big heart.",
+    "founded": "2010",
+    "founder": "Cassandra Thurswell",
+    "story": [
+      "Kitsch started in 2010 with the everyday basics — hair ties, clips, the small things we reach for again and again. The original business plan was barely a paragraph long.",
+      "Since then, Kitsch has grown from door-to-door hair-tie sales into a beauty brand carried in over 20,000 retail locations across 27 countries — while staying true to the same idea: create beauty essentials that are a step above, made as sustainably as possible, and priced so they're within everyone's reach.",
+      "Kitsch is female-founded and female-owned, built on the belief that consistency and hard work compound into something real. The brand calls the small daily pauses for self-care — fixing your hair, taking a breath before the next thing — \"Kitsch Moments\": little resets that give people a boost to keep going."
+    ],
+    "founderBio": [
+      "Cassandra Thurswell started Kitsch at 25, working out of her LA apartment — cold-calling stores and selling hair ties door-to-door before building her own line.",
+      "She bootstrapped the business and grew it gradually over more than a decade, staying close to what everyday customers actually wanted rather than chasing trends.",
+      "Today Kitsch products sit on shelves at Ulta, Sephora, and Whole Foods, and Cassandra has been recognized by outlets like Forbes and Inc. — but the philosophy hasn't changed: stay useful, stay accessible, stay close to the community."
+    ],
+    "mission": "To create accessible, elevated beauty essentials — for hair and for everyday self-care — made as sustainably as possible, so our community always feels a little more ready for whatever the day brings.",
+    "vision": "To be the brand people reach for first — not because we're everywhere, but because we understand them: their hair, their hustle, and their need for a little boost along the way.",
+    "values": [
+      { "icon": "🤝", "name": "Community First", "description": "We stay close to the people we serve. Every product, every conversation, starts with actually listening." },
+      { "icon": "✨", "name": "Elevated Simplicity", "description": "We take the everyday things people reach for again and again, and make them a little better — better quality, better design, better for the planet." },
+      { "icon": "🌱", "name": "Sustainability with Purpose", "description": "From ocean plastic recovery to clean water access, we make choices that matter beyond the shelf — not just a checkbox." },
+      { "icon": "💪", "name": "Positivity & Grit", "description": "We started with a one-paragraph business plan and door-to-door sales. Showing up, staying positive, and doing the work is how you build something real." },
+      { "icon": "💛", "name": "Accessible Indulgence", "description": "Self-care shouldn't be a luxury. We create small moments of care that are within everyone's reach, for every hair type, every budget." }
+    ],
+    "kitschMomentsInCX": {
+      "intro": "Kitsch defines a \"Kitsch Moment\" as any small pause in someone's day that gives them a little boost — a reset, a transition, a bit of self-care. In Customer Experience, every ticket, comment, or DM is a Kitsch Moment waiting to happen. Our job isn't just to close the case. It's to leave that person feeling a little more taken care of than before they reached out. That takes two things from every one of us: staying emotionally grounded even in a hard interaction, and leading with honesty and follow-through so people can always trust what we tell them.",
+      "behaviors": [
+        { "icon": "🌬️", "title": "Reset", "description": "When a customer is frustrated, we stay grounded and de-escalate before we jump to a solution — their emotion isn't a personal attack, it's a signal." },
+        { "icon": "👂", "title": "Reassure", "description": "We confirm, in plain language, that the person was heard — before we start solving." },
+        { "icon": "💗", "title": "Delight", "description": "When there's room, we add a small human touch that shows we see a person, not a ticket number." },
+        { "icon": "✅", "title": "Follow Through", "description": "We tell people the truth, even when it's not what they want to hear — and a Kitsch Moment isn't complete until they know exactly what happens next." }
+      ]
+    },
+    "givingBack": {
+      "intro": "Sustainability at Kitsch isn't a side project — it's part of how the brand operates.",
+      "items": [
+        { "icon": "🌊", "title": "4ocean Partnership", "description": "Every shampoo or conditioner bar sold funds the removal of the ocean-plastic equivalent of one bottle from oceans, rivers, and coastlines." },
+        { "icon": "💧", "title": "Charity: Water", "description": "Kitsch committed $10,000 to build a community well in Uganda, providing clean water access to 300+ community members." },
+        { "icon": "🐰", "title": "Vegan & Cruelty-Free", "description": "Products are made with animal-friendly materials — never derived from or tested on animals." },
+        { "icon": "♻️", "title": "Recycled & Reusable", "description": "From packaging to hair elastics, Kitsch favors recycled materials and reusable alternatives over single-use." }
+      ]
+    },
+    "leadershipPhilosophy": {
+      "title": "How We Lead",
+      "intro": "Leadership at Kitsch shows up the same way our products do: practical, consistent, and genuinely caring. Every coaching conversation, every 1:1, and every piece of feedback in this tool is built on two simple ideas — stay grounded, and lead with integrity.",
+      "pillars": [
+        {
+          "icon": "💜",
+          "name": "Stay Grounded",
+          "description": "The strength to stay calm and clear-headed during a hard interaction, a hard month, or a hard conversation — without losing empathy for the customer or the team.",
+          "practices": [
+            "Leaders regulate their own state before coaching a tough moment.",
+            "A frustrated customer is a signal to solve for, not a personal attack.",
+            "Sustainable pace and self-care are treated as part of performance, not separate from it."
+          ]
+        },
+        {
+          "icon": "💛",
+          "name": "Lead With Integrity",
+          "description": "Leading — and serving customers — through consistency, honesty, and follow-through, not authority.",
+          "practices": [
+            "We tell people the truth, even when it's not what they want to hear.",
+            "1:1 coaching is built on transparency: clear metrics, clear expectations, clear next steps.",
+            "Every interaction is a chance to leave someone a little better than we found them."
+          ]
+        }
+      ]
+    }
   },
   "rollout": [
     { "phase": "Days 1-30", "name": "Diagnose", "activeWeight": 0, "description": "Scorecard runs in observation-only mode. Real Actuals are collected for every metric to build a true root-cause map, but weights are not yet used to evaluate performance formally." },
