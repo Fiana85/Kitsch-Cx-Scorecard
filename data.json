@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "company": "Kitsch",
+    "department": "Customer Experience Department",
+    "subtitle": "CSR (Tickets) + CSSR (Social Media)",
+    "version": "v1.0.0",
+    "lastUpdated": "2026-08-31",
+    "contractStartDate": "2026-09-07"
+  },
+  "tiers": [
+    { "name": "Platinum", "min": 1.0,  "color": "#C9A9E9", "emoji": "\uD83D\uDC8E" },
+    { "name": "Gold",     "min": 0.95, "color": "#8FD9A8", "emoji": "\uD83C\uDFC6" },
+    { "name": "Silver",   "min": 0.85, "color": "#FFE39A", "emoji": "\u2B50" },
+    { "name": "Needs Improvement", "min": 0, "color": "#FFAFAF", "emoji": "\uD83D\uDD27" }
+  ],
+  "csr": {
+    "label": "CSR \u2014 Tickets (Email / Chat / Phone)",
+    "headcount": 8,
+    "metrics": [
+      { "name": "QA Score", "weight": 0.20, "goal": 0.95, "cap": 0.90, "unit": "%", "actual": 0.91, "direction": "higher", "note": "Typical industry benchmark for ticket quality is 90-95%." },
+      { "name": "SLA Attainment", "weight": 0.20, "goal": 0.90, "cap": 0.85, "unit": "%", "actual": 0.82, "direction": "higher", "note": "% of tickets resolved within the committed SLA window, per issue category." },
+      { "name": "Attendance / Adherence", "weight": 0.15, "goal": 0.97, "cap": 0.95, "unit": "%", "actual": 0.88, "direction": "higher", "note": "Directly tied to the reported attendance / hours-not-met issue driving current gaps." },
+      { "name": "CSAT", "weight": 0.15, "goal": 0.90, "cap": 0.85, "unit": "%", "actual": 0.86, "direction": "higher", "note": "Post-interaction satisfaction survey. Ecommerce/retail benchmark typically 85-92%." },
+      { "name": "AHT (Average Handle Time)", "weight": 0.10, "goal": 480, "cap": 600, "unit": "sec", "actual": 540, "direction": "lower", "note": "8-min goal / 10-min cap. Balanced against QA, not optimized in isolation." },
+      { "name": "First Response Time (Tickets)", "weight": 0.10, "goal": 240, "cap": 360, "unit": "min", "actual": 300, "direction": "lower", "note": "4h goal / 6h cap. Reasonable standard for email/chat tickets in ecommerce." },
+      { "name": "Backlog Health (% tickets \u2264 2 days)", "weight": 0.10, "goal": 0.80, "cap": 0.65, "unit": "%", "actual": 0.45, "direction": "higher", "note": "Core metric for the central problem: aged, unresolved tickets." }
+    ]
+  },
+  "cssr": {
+    "label": "CSSR \u2014 Social Media (FB / IG / TikTok)",
+    "headcount": 4,
+    "metrics": [
+      { "name": "Sentiment Score", "weight": 0.20, "goal": 0.85, "cap": 0.75, "unit": "%", "actual": 0.72, "direction": "higher", "note": "% of resolved interactions tagged positive/neutral. Protects brand reputation." },
+      { "name": "Brand Voice / Tone QA", "weight": 0.20, "goal": 0.95, "cap": 0.90, "unit": "%", "actual": 0.88, "direction": "higher", "note": "Qualitative scorecard check: empathy, on-brand tone, public-facing risk management." },
+      { "name": "First Response Time (Social)", "weight": 0.20, "goal": 15, "cap": 30, "unit": "min", "actual": 45, "direction": "lower", "note": "15-min goal / 30-min cap. 73% of social media users switch brands if response is slow." },
+      { "name": "Resolution Time (Social)", "weight": 0.15, "goal": 240, "cap": 480, "unit": "min", "actual": 390, "direction": "lower", "note": "4h goal / 8h cap from first contact to full thread resolution." },
+      { "name": "Volume / Productivity", "weight": 0.15, "goal": 50, "cap": 35, "unit": "int/agent/day", "actual": 33, "direction": "higher", "note": "Comments + DMs resolved per agent per shift, across FB/IG/TikTok." },
+      { "name": "Escalation Rate", "weight": 0.10, "goal": 0.10, "cap": 0.20, "unit": "%", "actual": 0.24, "direction": "lower", "note": "% of interactions requiring escalation to Tier 2 or another department." }
+    ]
+  },
+  "rollout": [
+    { "phase": "Days 1-30", "name": "Diagnose", "activeWeight": 0, "description": "Scorecard runs in observation-only mode. Real Actuals are collected for every metric to build a true root-cause map, but weights are not yet used to evaluate performance formally." },
+    { "phase": "Days 31-60", "name": "Structure", "activeWeight": 0.5, "description": "Weights and goals are formalized and communicated to the team. The scorecard runs in shadow/pilot mode (50% operational weight) alongside the new escalation matrix, SOP library and attendance policy." },
+    { "phase": "Days 61-90", "name": "Scale & Accountability", "activeWeight": 1, "description": "KPI governance is fully live (100% weight), tied to a formal coaching cadence, tier classification, and the peak-season staffing playbook." }
+  ]
+}
